@@ -977,7 +977,7 @@
     const elapsedSecs = Math.floor((Date.now() - sessionStartTime) / 1000);
     const mins = Math.floor(elapsedSecs / 60);
     const secs = elapsedSecs % 60;
-    document.getElementById('session-timer').innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    document.getElementById('session-timer').innerText = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
   }
 
   function resetSessionTimer() {
@@ -1036,9 +1036,9 @@
       heading = event.webkitCompassHeading;
     }
     if (heading !== null) {
-      document.getElementById('compass-rose-ring').style.transform = `rotate(${-heading}deg)`;
+      document.getElementById('compass-rose-ring').style.transform = 'rotate(' + (-heading) + 'deg)';
       const needleAngle = qiblaBearing - heading;
-      document.getElementById('compass-needle-wrapper').style.transform = `rotate(${needleAngle}deg)`;
+      document.getElementById('compass-needle-wrapper').style.transform = 'rotate(' + needleAngle + 'deg)';
 
       let diff = Math.abs((needleAngle + 180) % 360 - 180);
       let needle = document.getElementById('compass-needle');
@@ -1074,7 +1074,7 @@
 
   function nextQuote() {
     currentQuoteIdx = (currentQuoteIdx + 1) % quotes.length;
-    document.getElementById('quote-display').innerText = `"${quotes[currentQuoteIdx].text}"`;
+    document.getElementById('quote-display').innerText = '"' + quotes[currentQuoteIdx].text + '"';
     document.getElementById('author-display').innerText = quotes[currentQuoteIdx].author;
   }
 
@@ -1133,7 +1133,6 @@
   let checkInHistory = JSON.parse(localStorage.getItem('checkInHistory')) || [];
   let currentWeight = Number(localStorage.getItem('currentWeight')) || 0;
   
-  // Dynamic Macro Targets based on Shift Schedule
   let activeMacroTargets = { cals: 1550, protein: 140, carbs: 146, fat: 45 };
 
   let pendingCheckInImage = null;
@@ -1178,7 +1177,6 @@
     }
   };
 
-  // --- AUTOMATIC SHIFT & MACRO PRESET CALCULATOR ---
   function determineShiftAndMacros() {
     const epoch = new Date('2026-09-05').setHours(0,0,0,0);
     const now = new Date().setHours(0,0,0,0);
@@ -1190,9 +1188,6 @@
 
     document.getElementById('shift-widget').innerText = currentShift;
 
-    // Shift Logic: 
-    // Training Days = Night Shift 1 (cycle === 2) OR any of the 4 Days Off (cycle >= 4)
-    // Rest Days = Day Shift 1 (0), Day Shift 2 (1), Night Shift 2 (3)
     let isTrainingDay = (cycle === 2 || cycle >= 4);
 
     if (isTrainingDay) {
@@ -1201,7 +1196,7 @@
       document.getElementById('shift-mode-badge').style.background = "rgba(48,209,88,0.15)";
       document.getElementById('shift-mode-badge').style.color = "var(--green)";
     } else {
-      activeMacroTargets = { cals: 1350, protein: 140, carbs: 96, fat: 45 }; // Protein maintained at 140g based on daily requirements
+      activeMacroTargets = { cals: 1350, protein: 140, carbs: 96, fat: 45 };
       document.getElementById('shift-mode-badge').innerText = "Rest Day Preset";
       document.getElementById('shift-mode-badge').style.background = "rgba(10,132,255,0.15)";
       document.getElementById('shift-mode-badge').style.color = "var(--blue)";
@@ -1268,9 +1263,9 @@
   function updateWeightUI() {
     const display = document.getElementById('latest-weight-display');
     if (currentWeight > 0) {
-      display.innerText = `Latest Logged Weight: ${currentWeight} kg`;
+      display.innerText = 'Latest Logged Weight: ' + currentWeight + ' kg';
     } else {
-      display.innerText = `Latest Logged Weight: None`;
+      display.innerText = 'Latest Logged Weight: None';
     }
   }
 
@@ -1292,7 +1287,7 @@
     }
 
     if (dataPoints.length === 0) {
-      svg.innerHTML = `<text x="150" y="65" fill="var(--accent)" font-size="0.8rem" text-anchor="middle">No weight logs recorded yet</text>`;
+      svg.innerHTML = '<text x="150" y="65" fill="var(--accent)" font-size="0.8rem" text-anchor="middle">No weight logs recorded yet</text>';
       return;
     }
 
@@ -1341,7 +1336,7 @@
     dataPoints.forEach((d, idx) => {
       const x = getX(idx);
       const y = getY(d.weight);
-      pointsStr += `${x},${y} `;
+      pointsStr += x + ',' + y + ' ';
     });
 
     if (dataPoints.length > 1) {
@@ -1379,7 +1374,6 @@
     });
   }
 
-  // --- NUTRITION & SAVED MEALS LOGIC ---
   document.getElementById('food').addEventListener('input', function() {
     const selected = this.value;
     const hint = document.getElementById('food-hint');
@@ -1434,7 +1428,7 @@
     const f = Number(document.getElementById('fat').value) || 0;
     
     if (!foodName) return alert("Please enter or scan a food item.");
-    const displayName = grams ? `${foodName} (${grams}ml/g serving)` : foodName;
+    const displayName = grams ? foodName + ' (' + grams + 'ml/g serving)' : foodName;
 
     meals.push({ food: displayName, cals, p, c, f });
     localStorage.setItem('meals', JSON.stringify(meals));
@@ -1450,7 +1444,7 @@
 
   function renderMeals() {
     const ul = document.getElementById('meal-log');
-    ul.innerHTML = meals.map((m, idx) => `<li><strong>${m.food}</strong> <button onclick="removeMeal(${idx})" style="float:right; background:none; border:none; color:var(--red); cursor:pointer; font-size:0.8rem;">Remove</button><br>${m.cals}kcal (P:${m.p}g | C:${m.c}g | F:${m.f}g)</li>`).join('');
+    ul.innerHTML = meals.map((m, idx) => '<li><strong>' + m.food + '</strong> <button onclick="removeMeal(' + idx + ')" style="float:right; background:none; border:none; color:var(--red); cursor:pointer; font-size:0.8rem;">Remove</button><br>' + m.cals + 'kcal (P:' + m.p + 'g | C:' + m.c + 'g | F:' + m.f + 'g)</li>').join('');
     
     const totals = meals.reduce((acc, curr) => {
       acc.cals += curr.cals; acc.p += curr.p; acc.c += curr.c; acc.f += curr.f; return acc;
@@ -1461,10 +1455,10 @@
     const leftCarbs = Math.max(0, activeMacroTargets.carbs - totals.c);
     const leftFat = Math.max(0, activeMacroTargets.fat - totals.f);
 
-    document.getElementById('left-cals-val').innerText = `${Math.round(leftCals)} kcal left`;
-    document.getElementById('left-protein-val').innerText = `${leftProtein.toFixed(1)}g left`;
-    document.getElementById('left-carbs-val').innerText = `${leftCarbs.toFixed(1)}g left`;
-    document.getElementById('left-fat-val').innerText = `${leftFat.toFixed(1)}g left`;
+    document.getElementById('left-cals-val').innerText = Math.round(leftCals) + ' kcal left';
+    document.getElementById('left-protein-val').innerText = leftProtein.toFixed(1) + 'g left';
+    document.getElementById('left-carbs-val').innerText = leftCarbs.toFixed(1) + 'g left';
+    document.getElementById('left-fat-val').innerText = leftFat.toFixed(1) + 'g left';
 
     const calsPercent = activeMacroTargets.cals > 0 ? Math.min(100, (totals.cals / activeMacroTargets.cals) * 100) : 0;
     const proteinPercent = activeMacroTargets.protein > 0 ? Math.min(100, (totals.p / activeMacroTargets.protein) * 100) : 0;
@@ -1492,7 +1486,7 @@
     savedMeals[mealName.trim()] = [...meals];
     localStorage.setItem('savedMeals', JSON.stringify(savedMeals));
     updateSavedMealDropdown();
-    alert(`Meal "${mealName.trim()}" saved successfully!`);
+    alert('Meal "' + mealName.trim() + '" saved successfully!');
   }
 
   function updateSavedMealDropdown() {
@@ -1514,10 +1508,9 @@
     localStorage.setItem('meals', JSON.stringify(meals));
     renderMeals();
     autoSaveTodayPartial();
-    alert(`Loaded saved meal "${name}" into your day!`);
+    alert('Loaded saved meal "' + name + '" into your day!');
   }
 
-  // --- UPGRADED LABEL SCANNER PARSER ---
   async function scanNutritionLabel() {
     const fileInput = document.getElementById('nutrition-label-input');
     if (fileInput.files.length === 0) return alert("Please select a nutrition label image first.");
@@ -1535,9 +1528,9 @@
 
       function parseMetric(keywordRegex) {
         const lines = text.split('\n');
-        for (let line of lines) {
-          if (keywordRegex.test(line)) {
-            const matches = line.match(/\d+(\.\d+)?/g);
+        for (let i = 0; i < lines.length; i++) {
+          if (keywordRegex.test(lines[i])) {
+            const matches = lines[i].match(/\d+(\.\d+)?/g);
             if (matches && matches.length > 0) {
               return parseFloat(matches[0]);
             }
@@ -1569,7 +1562,7 @@
 
       hint.innerText = "Scanned successfully! Values loaded per 100ml/g and scaled for your 350ml bottle.";
       fileInput.value = '';
-      alert(`Label successfully parsed (Per 100ml):\nCalories: ${cals} kcal\nFat: ${fat}g\nCarbs: ${carbs}g\nProtein: ${protein}g`);
+      alert('Label successfully parsed (Per 100ml):\nCalories: ' + cals + ' kcal\nFat: ' + fat + 'g\nCarbs: ' + carbs + 'g\nProtein: ' + protein + 'g');
     } catch (err) {
       console.error(err);
       hint.innerText = "OCR scan failed. Please verify image clarity.";
@@ -1577,7 +1570,6 @@
     }
   }
 
-  // --- INTERACTIVE SALAH CARDS LOGIC ---
   function togglePrayer(prayerId) {
     const checkbox = document.getElementById(prayerId);
     checkbox.checked = !checkbox.checked;
@@ -1597,7 +1589,6 @@
     });
   }
 
-  // --- CHECK-INS & OTHER HELPERS ---
   function stageCheckInPhoto() {
     const fileInput = document.getElementById('checkin-photo-input');
     if (fileInput.files.length === 0) return alert("Please choose an image file first.");
@@ -1607,7 +1598,7 @@
     reader.onload = function(e) {
       pendingCheckInImage = e.target.result;
       const currContainer = document.getElementById('curr-image-container');
-      currContainer.innerHTML = `<img src="${pendingCheckInImage}" alt="Staged Check-in"><div style="font-size:0.7rem; color:var(--green); margin-top:4px;">Staged (Ready)</div>`;
+      currContainer.innerHTML = '<img src="' + pendingCheckInImage + '" alt="Staged Check-in"><div style="font-size:0.7rem; color:var(--green); margin-top:4px;">Staged (Ready)</div>';
       alert("Photo staged successfully! Now tap 'Run AI Visual Comparison'.");
     };
     reader.readAsDataURL(file);
@@ -1644,11 +1635,11 @@
 
     const resultEl = document.getElementById('ai-checkin-result');
     if (checkInHistory.length < 2) {
-      resultEl.innerHTML = `<strong>Initial Check-In Logged (${todayKey}):</strong> Baseline physique image successfully saved. Upload your next check-in next week to enable multi-week AI comparative scans.`;
+      resultEl.innerHTML = '<strong>Initial Check-In Logged (' + todayKey + '):</strong> Baseline physique image successfully saved. Upload your next check-in next week to enable multi-week AI comparative scans.';
     } else {
       const prev = checkInHistory[checkInHistory.length - 2];
       const curr = checkInHistory[checkInHistory.length - 1];
-      resultEl.innerHTML = `<strong>Scan Comparison Completed:</strong> Comparing check-in from <em>${prev.date}</em> vs <em>${curr.date}</em>. <br><br><strong>Visual Breakdown:</strong> Muscle definition appears sharper around upper pectorals and shoulder tie-ins, with cleaner conditioning and balanced symmetry. Outstanding progress!`;
+      resultEl.innerHTML = '<strong>Scan Comparison Completed:</strong> Comparing check-in from <em>' + prev.date + '</em> vs <em>' + curr.date + '</em>. <br><br><strong>Visual Breakdown:</strong> Muscle definition appears sharper around upper pectorals and shoulder tie-ins, with cleaner conditioning and balanced symmetry. Outstanding progress!';
     }
     autoSaveTodayPartial();
     alert("Check-in scan saved successfully!");
@@ -1663,12 +1654,12 @@
       currContainer.innerHTML = "No image";
     } else if (checkInHistory.length === 1) {
       prevContainer.innerHTML = "No prior week";
-      currContainer.innerHTML = `<img src="${checkInHistory[0].image}" alt="Current Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">${checkInHistory[0].date}</div>`;
+      currContainer.innerHTML = '<img src="' + checkInHistory[0].image + '" alt="Current Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">' + checkInHistory[0].date + '</div>';
     } else {
       const prev = checkInHistory[checkInHistory.length - 2];
       const curr = checkInHistory[checkInHistory.length - 1];
-      prevContainer.innerHTML = `<img src="${prev.image}" alt="Previous Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">${prev.date}</div>`;
-      currContainer.innerHTML = `<img src="${curr.image}" alt="Current Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">${curr.date}</div>`;
+      prevContainer.innerHTML = '<img src="' + prev.image + '" alt="Previous Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">' + prev.date + '</div>';
+      currContainer.innerHTML = '<img src="' + curr.image + '" alt="Current Check-in"><div style="font-size:0.7rem; color:var(--accent); margin-top:4px;">' + curr.date + '</div>';
     }
   }
 
@@ -1685,7 +1676,7 @@
       d.setDate(d.getDate() - 1);
       if (streak > 365) break;
     }
-    document.getElementById('streak-widget').innerText = `🔥 ${streak} Days`;
+    document.getElementById('streak-widget').innerText = '🔥 ' + streak + ' Days';
   }
 
   function generateAIBrief() {
@@ -1714,13 +1705,13 @@
     if (totalCals > 1500) positives.push("solid caloric intake tracking");
     else improvements.push("ensure macro and fuel goals are fully met");
 
-    reviewEl.innerHTML = `<strong>${lastDateKey}:</strong> You excelled in <em>${positives.join(', ')}</em>. To optimize performance moving forward, focus on <em>${improvements.join(', ')}</em>.`;
+    reviewEl.innerHTML = '<strong>' + lastDateKey + ':</strong> You excelled in <em>' + positives.join(', ') + '</em>. To optimize performance moving forward, focus on <em>' + improvements.join(', ') + '</em>.';
   }
 
   async function fetchPrayerTimes() {
     try {
       const dateStr = new Date().toISOString().split('T')[0];
-      let res = await fetch(`https://www.londonprayertimes.com/api/times/?format=json&date=${dateStr}&24hours=true`).catch(() => null);
+      let res = await fetch('https://www.londonprayertimes.com/api/times/?format=json&date=' + dateStr + '&24hours=true').catch(() => null);
       let data = res ? await res.json() : null;
 
       let times = {};
@@ -1760,10 +1751,11 @@
     let next = prayerKeys[0];
     let found = false;
 
-    for (let p of prayerKeys) {
+    for (let i = 0; i < prayerKeys.length; i++) {
+      let p = prayerKeys[i];
       if (!p.time) continue;
-      const [h, m] = p.time.split(':').map(Number);
-      const pMinutes = h * 60 + m;
+      const parts = p.time.split(':').map(Number);
+      const pMinutes = parts[0] * 60 + parts[1];
       if (pMinutes > currentTime) {
         next = p;
         found = true;
@@ -1778,15 +1770,15 @@
     document.getElementById('salah-next-title').innerText = next.name;
 
     if (!found) {
-      document.getElementById('next-prayer-widget').innerText = `Fajr (Tomorrow)`;
+      document.getElementById('next-prayer-widget').innerText = "Fajr (Tomorrow)";
       document.getElementById('salah-next-countdown').innerText = times.Fajr || '--:--';
     } else {
-      const [h, m] = next.time.split(':').map(Number);
-      const targetMinutes = h * 60 + m;
+      const parts = next.time.split(':').map(Number);
+      const targetMinutes = parts[0] * 60 + parts[1];
       const diffMins = targetMinutes - currentTime;
       const hoursLeft = Math.floor(diffMins / 60);
       const minsLeft = diffMins % 60;
-      document.getElementById('next-prayer-widget').innerText = `${next.name} in ${hoursLeft > 0 ? hoursLeft + 'h ' : ''}${minsLeft}m`;
+      document.getElementById('next-prayer-widget').innerText = next.name + ' in ' + (hoursLeft > 0 ? hoursLeft + 'h ' : '') + minsLeft + 'm';
       document.getElementById('salah-next-countdown').innerText = next.time;
     }
   }
@@ -1810,7 +1802,7 @@
 
     localStorage.setItem('savedRoutines', JSON.stringify(savedRoutines));
     updateRoutineDropdown();
-    alert(`Routine "${name}" saved!`);
+    alert('Routine "' + name + '" saved!');
   }
 
   function updateRoutineDropdown() {
@@ -1909,38 +1901,34 @@
     currentSession.exercises.forEach((ex, exIndex) => {
       const historyList = exerciseHistory[ex.name] || [];
       const pb = personalBests[ex.name] || { kg: 0, reps: 0 };
-      let pbText = pb.kg > 0 ? `PB: ${pb.kg}kg × ${pb.reps}` : "";
+      let pbText = pb.kg > 0 ? 'PB: ' + pb.kg + 'kg × ' + pb.reps : "";
 
       let setsHTML = '';
       
       ex.sets.forEach((set, setIndex) => {
         let prev = historyList[setIndex];
-        let prevText = prev ? `${prev.kg} kg × ${prev.reps}` : "-";
+        let prevText = prev ? prev.kg + ' kg × ' + prev.reps : "-";
         
-        setsHTML += `
-          <tr>
-            <td style="color:var(--accent); text-align:center;">${setIndex + 1}</td>
-            <td style="color:var(--accent); font-size:0.75rem; text-align:center;">${prevText}</td>
-            <td><input type="number" value="${set.kg}" placeholder="0" oninput="updateSetData(${exIndex}, ${setIndex}, 'kg', this.value)"></td>
-            <td><input type="number" value="${set.reps}" placeholder="0" oninput="updateSetData(${exIndex}, ${setIndex}, 'reps', this.value)"></td>
-            <td><button class="btn-small btn-danger" onclick="removeSet(${exIndex}, ${setIndex})">×</button></td>
-          </tr>
-        `;
+        setsHTML += '<tr>' +
+          '<td style="color:var(--accent); text-align:center;">' + (setIndex + 1) + '</td>' +
+          '<td style="color:var(--accent); font-size:0.75rem; text-align:center;">' + prevText + '</td>' +
+          '<td><input type="number" value="' + set.kg + '" placeholder="0" oninput="updateSetData(' + exIndex + ', ' + setIndex + ', \'kg\', this.value)"></td>' +
+          '<td><input type="number" value="' + set.reps + '" placeholder="0" oninput="updateSetData(' + exIndex + ', ' + setIndex + ', \'reps\', this.value)"></td>' +
+          '<td><button class="btn-small btn-danger" onclick="removeSet(' + exIndex + ', ' + setIndex + ')">×</button></td>' +
+          '</tr>';
       });
 
-      container.innerHTML += `
-        <div class="exercise-block">
-          <div class="exercise-title-row">
-            <h3>${ex.name} ${pbText ? `<span class="pb-badge">${pbText}</span>` : ''}</h3>
-            <button class="btn-small btn-danger" onclick="removeExercise(${exIndex})">Remove</button>
-          </div>
-          <table class="set-table">
-            <tr><th style="width:10%;">Set</th><th style="width:35%;">Previous</th><th style="width:25%;">KG</th><th style="width:20%;">Reps</th><th style="width:10%;"></th></tr>
-            ${setsHTML}
-          </table>
-          <button class="btn-small" onclick="addSet(${exIndex})" style="height:32px; margin-top:8px;">+ Add Set</button>
-        </div>
-      `;
+      container.innerHTML += '<div class="exercise-block">' +
+        '<div class="exercise-title-row">' +
+        '<h3>' + ex.name + (pbText ? ' <span class="pb-badge">' + pbText + '</span>' : '') + '</h3>' +
+        '<button class="btn-small btn-danger" onclick="removeExercise(' + exIndex + ')">Remove</button>' +
+        '</div>' +
+        '<table class="set-table">' +
+        '<tr><th style="width:10%;">Set</th><th style="width:35%;">Previous</th><th style="width:25%;">KG</th><th style="width:20%;">Reps</th><th style="width:10%;"></th></tr>' +
+        setsHTML +
+        '</table>' +
+        '<button class="btn-small" onclick="addSet(' + exIndex + ')" style="height:32px; margin-top:8px;">+ Add Set</button>' +
+        '</div>';
     });
   }
 
@@ -2008,7 +1996,7 @@
     const month = calendarViewDate.getMonth();
     
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById('cal-month-year-label').innerText = `${monthNames[month]} ${year}`;
+    document.getElementById('cal-month-year-label').innerText = monthNames[month] + ' ' + year;
 
     const grid = document.getElementById('cal-days-grid');
     grid.innerHTML = '';
@@ -2032,13 +2020,15 @@
 
       if (masterCalendarLog[dateKey]) {
         cell.classList.add('has-data');
-        cell.onclick = () => selectCalendarDay(dateKey, cell);
+        cell.onclick = (function(k, c) { return function() { selectCalendarDay(k, c); }; })(dateKey, cell);
       } else {
-        cell.onclick = () => {
-          document.querySelectorAll('.cal-cell').forEach(c => c.classList.remove('selected'));
-          cell.classList.add('selected');
-          document.getElementById('selected-day-container').innerHTML = `<div class="day-log-details"><div style="color:var(--accent); font-weight:600;">📅 ${dateKey}</div><p style="color:var(--accent); margin-top:6px;">No data logged for this day.</p></div>`;
-        };
+        cell.onclick = (function(c, dk) { 
+          return function() {
+            document.querySelectorAll('.cal-cell').forEach(function(el) { el.classList.remove('selected'); });
+            c.classList.add('selected');
+            document.getElementById('selected-day-container').innerHTML = '<div class="day-log-details"><div style="color:var(--accent); font-weight:600;">📅 ' + dk + '</div><p style="color:var(--accent); margin-top:6px;">No data logged for this day.</p></div>';
+          };
+        })(cell, dateKey);
       }
 
       grid.appendChild(cell);
@@ -2053,43 +2043,41 @@
     let container = document.getElementById('selected-day-container');
 
     let prayerHTML = Object.keys(dayData.prayers).map(p => 
-      `<span style="margin-right:8px; color:${dayData.prayers[p] ? 'var(--green)' : 'var(--accent)'}">${p.toUpperCase()}</span>`
+      '<span style="margin-right:8px; color:' + (dayData.prayers[p] ? 'var(--green)' : 'var(--accent)') + '">' + p.toUpperCase() + '</span>'
     ).join('');
 
     let workoutHTML = "None";
     if (dayData.workout && dayData.workout.exercises && dayData.workout.exercises.length > 0) {
-      workoutHTML = `<div style="color:var(--green); font-weight:600; margin-top:4px;">${dayData.workout.name || 'Workout'}</div>`;
+      workoutHTML = '<div style="color:var(--green); font-weight:600; margin-top:4px;">' + (dayData.workout.name || 'Workout') + '</div>';
       dayData.workout.exercises.forEach(e => {
-        workoutHTML += `<div style="font-size:0.8rem; margin-top:2px;">• ${e.name}: ${e.sets.map(s => `${s.kg}kg×${s.reps}`).join(', ')}</div>`;
+        workoutHTML += '<div style="font-size:0.8rem; margin-top:2px;">• ' + e.name + ': ' + e.sets.map(s => s.kg + 'kg×' + s.reps).join(', ') + '</div>';
       });
     }
 
     let mealsHTML = "No meals logged.";
     let totalCals = 0, totalP = 0, totalC = 0, totalF = 0;
     if (dayData.meals && dayData.meals.length > 0) {
-      mealsHTML = dayData.meals.map(m => `<div style="font-size:0.8rem;">- ${m.food} (${m.cals} kcal)</div>`).join('');
+      mealsHTML = dayData.meals.map(m => '<div style="font-size:0.8rem;">- ' + m.food + ' (' + m.cals + ' kcal)</div>').join('');
       const totals = dayData.meals.reduce((acc, curr) => {
         acc.cals += curr.cals; acc.p += curr.p; acc.c += curr.c; acc.f += curr.f; return acc;
       }, {cals: 0, p: 0, c: 0, f: 0});
       totalCals = totals.cals; totalP = totals.p; totalC = totals.c; totalF = totals.f;
     }
 
-    let weightText = dayData.weight ? `${dayData.weight} kg` : "Not logged";
+    let weightText = dayData.weight ? dayData.weight + ' kg' : "Not logged";
 
-    container.innerHTML = `
-      <div class="day-log-details">
-        <div style="border-bottom:1px solid var(--border); padding-bottom:4px; font-weight:600; color:#fff;">📅 ${dateKey}</div>
-        <div style="margin-top:6px; font-size:0.8rem;"><strong>Weight:</strong> ${weightText}</div>
-        <div style="margin-top:6px; font-size:0.8rem;"><strong>Prayers:</strong> ${prayerHTML}</div>
-        <div style="margin-top:6px; font-size:0.8rem;"><strong>Training:</strong> ${workoutHTML}</div>
-        <div style="margin-top:6px; font-size:0.8rem;"><strong>Nutrition:</strong> (${totalCals} kcal | P:${totalP.toFixed(1)}g C:${totalC.toFixed(1)}g F:${totalF.toFixed(1)}g)<br>${mealsHTML}</div>
-        <div style="margin-top:6px; font-size:0.8rem;"><strong>Water:</strong> ${dayData.water || 0} ml</div>
-      </div>
-    `;
+    container.innerHTML = '<div class="day-log-details">' +
+      '<div style="border-bottom:1px solid var(--border); padding-bottom:4px; font-weight:600; color:#fff;">📅 ' + dateKey + '</div>' +
+      '<div style="margin-top:6px; font-size:0.8rem;"><strong>Weight:</strong> ' + weightText + '</div>' +
+      '<div style="margin-top:6px; font-size:0.8rem;"><strong>Prayers:</strong> ' + prayerHTML + '</div>' +
+      '<div style="margin-top:6px; font-size:0.8rem;"><strong>Training:</strong> ' + workoutHTML + '</div>' +
+      '<div style="margin-top:6px; font-size:0.8rem;"><strong>Nutrition:</strong> (' + totalCals + ' kcal | P:' + totalP.toFixed(1) + 'g C:' + totalC.toFixed(1) + 'g F:' + totalF.toFixed(1) + 'g)<br>' + mealsHTML + '</div>' +
+      '<div style="margin-top:6px; font-size:0.8rem;"><strong>Water:</strong> ' + (dayData.water || 0) + ' ml</div>' +
+      '</div>';
   }
 
   function resetDay() {
-    if(confirm('Archive today\'s progress and start a new day?')) {
+    if(confirm("Archive today's progress and start a new day?")) {
       autoSaveTodayPartial();
       resetSessionTimer();
 
